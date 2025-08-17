@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>YouTube Summarizer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f4f4f4;
+    }
+    textarea {
+      width: 100%;
+      padding: 10px;
+    }
+    button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      background: #0077ff;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #0055aa;
+    }
+    #output {
+      margin-top: 20px;
+      padding: 15px;
+      background: white;
+      border-radius: 6px;
+      box-shadow: 0px 2px 5px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+  <h1>YouTube Summarizer</h1>
+  <p>Paste text (like a YouTube transcript) below:</p>
+  <textarea id="inputText" rows="6"></textarea><br>
+  <button onclick="summarize()">Summarize</button>
+  <div id="output"></div>
+
+  <script>
+    async function summarize() {
+      const text = document.getElementById("inputText").value;
+      document.getElementById("output").innerText = "Summarizing...";
+
+      const res = await fetch("/.netlify/functions/summarize", {
+        method: "POST",
+        body: JSON.stringify({ text }),
+      });
+
+      const data = await res.json();
+      if (data.summary) {
+        document.getElementById("output").innerText = data.summary;
+      } else {
+        document.getElementById("output").innerText = "Error: " + data.error;
+      }
+    }
+  </script>
+</body>
+</html>
